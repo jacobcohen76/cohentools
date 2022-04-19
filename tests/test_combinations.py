@@ -12,5 +12,5 @@ T = TypeVar("T")
     "abcdefg",
 ])
 def test_kth_permutation(seq: Iterable[T]) -> None:
-    for k, permutation in zip(itertools.count(), itertools.permutations(seq)):
+    for k, permutation in enumerate(itertools.permutations(seq)):
         assert combinations.kth_permutation(seq, k) == permutation
