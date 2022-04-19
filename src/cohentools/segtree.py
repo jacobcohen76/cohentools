@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, Callable, Generic, Iterable, Sequence, SupportsIndex, TypeVar
+from typing import Any, Callable, Generic, Iterable, SupportsIndex, TypeVar
 
 T = TypeVar("T")
 
