@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Generic, Iterable, Mapping, TypeVar
+from typing import Generic, Iterable, TypeVar
 
 VT = TypeVar("VT")
 
@@ -14,7 +14,7 @@ def dag_outgoing_degree(graph: Graph[VT]) -> dict[VT, int]:
         outgoing_degree[src] += 1
     return outgoing_degree
 
-def dag_incoming_degree(graph: Graph[VT]) -> Mapping[VT, int]:
+def dag_incoming_degree(graph: Graph[VT]) -> dict[VT, int]:
     incoming_degree = {node: 0 for node in graph.nodes}
     for (src, dst) in graph.edges:
         incoming_degree[dst] += 1
