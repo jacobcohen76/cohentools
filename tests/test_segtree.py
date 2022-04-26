@@ -1,4 +1,4 @@
-from cohentools.segtree import SegTree
+from cohentools import SegTree
 
 import math
 

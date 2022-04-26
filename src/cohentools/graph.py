@@ -2,7 +2,7 @@ import dataclasses
 import math
 from typing import Callable, Generic, Optional, TypeVar
 
-from .disjointset import DisjointSet
+from . import DisjointSet
 
 VT = TypeVar("VT")
 WT = TypeVar("WT")
@@ -63,7 +63,7 @@ def kruskals(graph: Graph[VT], weight: Callable[[VT, VT], WT]) -> set[tuple[VT, 
     return mst
 
 def djikstras(graph: Graph[VT], src: VT, weight: Callable[[VT, VT], WT], *,
-             zero: WT = 0, inf: WT = math.inf) -> tuple[dict[VT, WT], dict[VT, Optional[VT]]]:
+              zero: WT = 0, inf: WT = math.inf) -> tuple[dict[VT, WT], dict[VT, Optional[VT]]]:
     outgoing = dag_outgoing_adj(graph)
     dist     = {node: inf  for node in graph.nodes}
     prev     = {node: None for node in graph.nodes}
@@ -77,4 +77,3 @@ def djikstras(graph: Graph[VT], src: VT, weight: Callable[[VT, VT], WT], *,
                 prev[adj] = node
         fringe.remove(node)
     return dist, prev
-
