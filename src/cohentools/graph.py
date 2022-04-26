@@ -1,8 +1,8 @@
 import dataclasses
 import math
-from typing import Callable, Generic, Iterable, Optional, TypeVar
+from typing import Callable, Generic, Optional, TypeVar
 
-from .disjoint_set import DisjointSet
+from .disjointset import DisjointSet
 
 VT = TypeVar("VT")
 WT = TypeVar("WT")
@@ -53,7 +53,7 @@ def topsort(dag: Graph[VT]) -> Optional[list[VT]]:
         return order
 
 def kruskals(graph: Graph[VT], weight: Callable[[VT, VT], WT]) -> set[tuple[VT, VT]]:
-    mst = set(); disjoint = DisjointSet()
+    mst = set(); disjoint = DisjointSet(graph.nodes)
     for (u, v) in sorted(graph.edges, key=lambda edge: weight(*edge)):
         find_u = disjoint.find(u)
         find_v = disjoint.find(v)

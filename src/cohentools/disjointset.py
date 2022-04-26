@@ -1,12 +1,13 @@
-from typing import Generic, Optional, TypeVar
+from typing import Generic, Iterable, Optional, TypeVar
 
 T = TypeVar("T")
 
 class DisjointSet(Generic[T]):
-    def __init__(self, parent: Optional[dict[T, T]]   = None,
-                       counts: Optional[dict[T, int]] = None) -> None:
-        self.parent = parent or {}
-        self.counts = counts or {}
+    def __init__(self, items: Optional[Iterable[T]] = None) -> None:
+        self.parent = dict[T, T]()
+        self.counts = dict[T, int]()
+        for item in items or []:
+            self.add(item)
 
     def add(self, node: T) -> None:
         self.parent.setdefault(node, node)
