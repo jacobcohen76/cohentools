@@ -1,6 +1,5 @@
 from typing import Any, Generic, Iterable, Iterator, Optional, TypeVar
-
-from ._utility import group_by
+from cohentools._utility import group_by
 
 T  = TypeVar("T")
 KT = TypeVar("KT")
@@ -50,7 +49,8 @@ class DisjointSet(Generic[T]):
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, DisjointSet):
             return NotImplemented
-        return self.parent == other.parent and self.counts == other.counts
+        return {tuple(group) for group in  self.groups()} == \
+               {tuple(group) for group in other.groups()}
 
     def __ne__(self, other: Any) -> bool:
         if not isinstance(other, DisjointSet):

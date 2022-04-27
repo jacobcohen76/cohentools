@@ -63,8 +63,5 @@ class SegTree(Generic[T]):
         return not self == other
 
     def __repr__(self) -> str:
-        return str(self)
-
-    def __str__(self) -> str:
         items = ", ".join(str(item) for item in self)
-        return f"{type(self).__name__}([{items}], {self.op})"
+        return f"{type(self).__name__}([{items}], {self.op!r})"

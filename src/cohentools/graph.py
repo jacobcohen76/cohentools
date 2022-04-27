@@ -1,8 +1,7 @@
 import dataclasses
 import math
 from typing import Callable, Generic, Optional, TypeVar
-
-from ._disjointset import DisjointSet
+from cohentools._disjointset import DisjointSet
 
 VT = TypeVar("VT")
 WT = TypeVar("WT")
