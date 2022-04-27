@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Callable, Iterable, MutableSequence, MutableSet, Type, TypeVar, overload
 
 T  = TypeVar("T")
