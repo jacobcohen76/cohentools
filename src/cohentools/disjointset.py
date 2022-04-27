@@ -1,5 +1,5 @@
 from typing import Any, Generic, Iterable, Iterator, Optional, TypeVar
-from cohentools._utility import group_by
+from cohentools.utility import group_by
 
 T  = TypeVar("T")
 KT = TypeVar("KT")
