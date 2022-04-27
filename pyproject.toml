@@ -8,9 +8,9 @@ authors = ["Jacob Cohen <jacobcohen76@protonmail.com>"]
 python = "^3.9"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
-pytest-cov = "^3.0.0"
+pytest = "^7.1.2"
 poethepoet = "^0.13.1"
+pytest-cov = "^3.0.0"
 
 [tool.poe.tasks.test]
 help = "runs unit test with coverage"
