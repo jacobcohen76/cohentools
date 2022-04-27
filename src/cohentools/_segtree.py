@@ -39,8 +39,8 @@ class SegTree(Generic[T]):
         return itertools.islice(self.tree, self.size, len(self.tree))
 
     def __repr__(self) -> str:
-        items = ','.join(repr(item) for item in iter(self))
-        return f"{self.__class__.__name__}([{items}], {self.op})"
+        items = ", ".join(repr(item) for item in iter(self))
+        return f"{type(self).__name__}([{items}], {self.op})"
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, SegTree):

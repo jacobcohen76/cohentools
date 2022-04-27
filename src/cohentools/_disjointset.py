@@ -41,7 +41,7 @@ class DisjointSet(Generic[T]):
     def __repr__(self) -> str:
         groups = self.groups()
         groups.sort(key=len, reverse=True)
-        return f"{self.__class__.__name__}({groups})"
+        return f"{type(self).__name__}({groups})"
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, DisjointSet):
@@ -52,3 +52,17 @@ class DisjointSet(Generic[T]):
         if not isinstance(other, DisjointSet):
             return NotImplemented
         return not self == other
+
+disjoint = DisjointSet([1, 2, 3, 4, 5, 6, 7, 8])
+
+disjoint.union(1, 2)
+disjoint.union(1, 5)
+disjoint.union(1, 6)
+disjoint.union(1, 8)
+
+disjoint.union(3, 4)
+
+disjoint.union(7, 7)
+
+print(disjoint)
+assert repr(disjoint) == "DisjointSet([{1, 2, 5, 6, 8}, {3, 4}, {7}])"
