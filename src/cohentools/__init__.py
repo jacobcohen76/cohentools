@@ -1,3 +1,3 @@
-from cohentools._disjointset import DisjointSet
-from cohentools._segtree     import SegTree
-from cohentools._utility     import identity_fn, group_by
+from cohentools.disjointset import DisjointSet
+from cohentools.segtree     import SegTree
+from cohentools.utility     import identity_fn, group_by
