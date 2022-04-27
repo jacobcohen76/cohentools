@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, Callable, Generic, Iterable, SupportsIndex, TypeVar
+from typing import Any, Callable, Generic, Iterable, Iterator, SupportsIndex, TypeVar
 
 T = TypeVar("T")
 
@@ -32,15 +32,24 @@ class SegTree(Generic[T]):
         self.size = len(items)
         self.op   = op
 
+    def query(self, i: int, j: int, default: T) -> T:
+        return query_tree(self.tree, self.op, i + len(self), j + len(self), default)
+
+    def __getitem__(self, key: SupportsIndex) -> T:
+        if not isinstance(key, SupportsIndex):
+            raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
+        return self.tree[key + len(self)]
+
+    def __setitem__(self, key: SupportsIndex, item: T) -> None:
+        if not isinstance(key, SupportsIndex):
+            raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
+        update_tree(self.tree, self.op, key + len(self), item)
+
     def __len__(self) -> int:
         return self.size
 
-    def __iter__(self) -> Iterable[T]:
+    def __iter__(self) -> Iterator[T]:
         return itertools.islice(self.tree, self.size, len(self.tree))
-
-    def __repr__(self) -> str:
-        items = ", ".join(repr(item) for item in iter(self))
-        return f"{type(self).__name__}([{items}], {self.op})"
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, SegTree):
@@ -53,15 +62,9 @@ class SegTree(Generic[T]):
             return NotImplemented
         return not self == other
 
-    def __getitem__(self, key: SupportsIndex) -> T:
-        if not isinstance(key, SupportsIndex):
-            raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
-        return self.tree[key + len(self)]
+    def __repr__(self) -> str:
+        return str(self)
 
-    def __setitem__(self, key: SupportsIndex, item: T) -> None:
-        if not isinstance(key, SupportsIndex):
-            raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
-        update_tree(self.tree, self.op, key + len(self), item)
-
-    def query(self, i: int, j: int, default: T) -> T:
-        return query_tree(self.tree, self.op, i + len(self), j + len(self), default)
+    def __str__(self) -> str:
+        items = ", ".join(str(item) for item in self)
+        return f"{type(self).__name__}([{items}], {self.op})"

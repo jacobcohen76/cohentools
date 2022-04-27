@@ -1,4 +1,4 @@
-from typing import Any, Generic, Iterable, Optional, TypeVar
+from typing import Any, Generic, Iterable, Iterator, Optional, TypeVar
 
 from ._utility import group_by
 
@@ -29,19 +29,23 @@ class DisjointSet(Generic[T]):
         self.parent[y]  = x
         self.counts[y] += self.counts[x]
 
+    def linked(self, x: T, y: T) -> bool:
+        return self.find(x) == self.find(y)
+
     def groups(self) -> list[set[T]]:
         return list(group_by(self.parent.keys(), self.find, set).values())
 
     def __len__(self) -> int:
         return len(self.parent)
 
-    def __iter__(self) -> Iterable[T]:
-        return self.parent.keys()
+    def __iter__(self) -> Iterator[T]:
+        return iter(self.parent.keys())
 
-    def __repr__(self) -> str:
-        groups = self.groups()
-        groups.sort(key=len, reverse=True)
-        return f"{type(self).__name__}({groups})"
+    def __contains__(self, item: T) -> bool:
+        return item in self.parent
+
+    def __bool__(self) -> bool:
+        return bool(self.parent and self.counts)
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, DisjointSet):
@@ -52,3 +56,12 @@ class DisjointSet(Generic[T]):
         if not isinstance(other, DisjointSet):
             return NotImplemented
         return not self == other
+
+    def __repr__(self) -> str:
+        find_table = {node: self.find(node) for node in self}
+        return f"{type(self).__name__}({find_table})"
+
+    def __str__(self) -> str:
+        groups = self.groups()
+        groups.sort(key=len, reverse=True)
+        return f"{type(self).__name__}({groups})"

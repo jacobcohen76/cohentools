@@ -1,6 +1,6 @@
 from cohentools import DisjointSet
 
-def test_disjoint_set_repr() -> None:
+def test_disjoint_set_str() -> None:
     disjoint = DisjointSet([1, 2, 3, 4, 5, 6, 7, 8])
 
     disjoint.union(1, 2)
@@ -12,4 +12,4 @@ def test_disjoint_set_repr() -> None:
 
     disjoint.union(7, 7)
 
-    assert repr(disjoint) == "DisjointSet([{1, 2, 5, 6, 8}, {3, 4}, {7}])"
+    assert str(disjoint) == "DisjointSet([{1, 2, 5, 6, 8}, {3, 4}, {7}])"
