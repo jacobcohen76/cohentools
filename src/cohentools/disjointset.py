@@ -2,7 +2,6 @@ from typing import Any, Generic, Iterable, Iterator, Optional, TypeVar
 from cohentools.utility import group_by
 
 T  = TypeVar("T")
-KT = TypeVar("KT")
 
 class DisjointSet(Generic[T]):
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
