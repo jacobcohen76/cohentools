@@ -25,7 +25,8 @@ def group_by(items: Iterable[T],
     elif issubclass(collector, MutableSet):
         insert_fn = collector.add
     else:
-        raise TypeError(f"collector must be a subclass of MutableSequence or MutableSet not {collector.__name__}")
+        raise TypeError(
+            f"collector must be a subclass of MutableSequence or MutableSet not {collector.__name__}")
     table = dict[KT, CT]()
     for item in items:
         group = table.setdefault(key(item), collector())
