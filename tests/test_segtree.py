@@ -1,6 +1,6 @@
-from cohentools import SegTree
-
 import math
+
+from cohentools import SegTree
 
 def test_segtree() -> None:
     tree = SegTree(array := [1, 2, 3, 4, 5], min)

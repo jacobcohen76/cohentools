@@ -1,9 +1,9 @@
-from cohentools import combinations
-
 import itertools
 from typing import Iterable, TypeVar
 
 import pytest
+
+from cohentools import combinations
 
 T = TypeVar("T")
 

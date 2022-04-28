@@ -1,4 +1,4 @@
-from typing import Callable, Iterable, MutableSequence, MutableSet, Type, TypeVar, overload
+from typing import Callable, Iterable, MutableSequence, MutableSet, overload, Type, TypeVar
 
 T  = TypeVar("T")
 KT = TypeVar("KT")
@@ -25,7 +25,7 @@ def group_by(items: Iterable[T],
     elif issubclass(collector, MutableSet):
         insert_fn = collector.add
     else:
-        raise Exception("collector must be an instance of MutableSequence or MutableSet")
+        raise TypeError(f"collector must be a subclass of MutableSequence or MutableSet not {collector.__name__}")
     table = dict[KT, CT]()
     for item in items:
         group = table.setdefault(key(item), collector())
