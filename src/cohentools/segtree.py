@@ -1,5 +1,13 @@
 import itertools
-from typing import Any, Callable, Generic, Iterable, Iterator, SupportsIndex, TypeVar
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    Iterator,
+    SupportsIndex,
+    TypeVar,
+)
 
 T = TypeVar("T")
 
@@ -28,33 +36,33 @@ def query_tree(tree: list[T], op: Callable[[T, T], T], lower: int, upper: int, d
 
 class SegTree(Generic[T]):
     def __init__(self, items: Iterable[T], op: Callable[[T, T], T]) -> None:
-        self.tree = make_tree(items := list(items), op)
-        self.size = len(items)
-        self.op   = op
+        self._tree = make_tree(items := list(items), op)
+        self._size = len(items)
+        self._op   = op
 
     def query(self, i: int, j: int, default: T) -> T:
-        return query_tree(self.tree, self.op, i + len(self), j + len(self), default)
+        return query_tree(self._tree, self._op, i + len(self), j + len(self), default)
 
     def __getitem__(self, key: SupportsIndex) -> T:
         if not isinstance(key, SupportsIndex):
             raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
-        return self.tree[key + len(self)]
+        return self._tree[key + len(self)]
 
     def __setitem__(self, key: SupportsIndex, item: T) -> None:
         if not isinstance(key, SupportsIndex):
             raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
-        update_tree(self.tree, self.op, key + len(self), item)
+        update_tree(self._tree, self._op, key + len(self), item)
 
     def __len__(self) -> int:
-        return self.size
+        return self._size
 
     def __iter__(self) -> Iterator[T]:
-        return itertools.islice(self.tree, self.size, len(self.tree))
+        return itertools.islice(self._tree, len(self), len(self._tree))
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, SegTree):
             return NotImplemented
-        return self.op == other.op and \
+        return self._op == other._op and \
             all(a == b for a, b in zip(self, other))
 
     def __ne__(self, other: Any) -> bool:
@@ -64,4 +72,4 @@ class SegTree(Generic[T]):
 
     def __repr__(self) -> str:
         items = ", ".join(str(item) for item in self)
-        return f"{type(self).__name__}([{items}], {self.op!r})"
+        return f"{type(self).__name__}([{items}], {self._op})"

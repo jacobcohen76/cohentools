@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Generic, Iterable, Optional, TypeVar
+from typing import (
+    Generic,
+    Iterable,
+    Optional,
+    TypeVar,
+)
 
 T = TypeVar("T")
 
@@ -20,7 +25,7 @@ def walk_preorder(root: Optional[TreeNode[T]]) -> Iterable[TreeNode[T]]:
             stack.append(node.left)
 
 def walk_inorder(root: Optional[TreeNode[T]]) -> Iterable[TreeNode[T]]:
-    stack = []; node = root
+    stack = list[TreeNode[T]](); node = root
     while stack or node:
         while node:
             stack.append(node)

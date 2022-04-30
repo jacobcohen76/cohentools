@@ -1,5 +1,8 @@
 import math
-from typing import Iterable, TypeVar
+from typing import (
+    Iterable,
+    TypeVar,
+)
 
 T = TypeVar("T")
 
