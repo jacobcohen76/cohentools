@@ -7,7 +7,7 @@ from typing import (
     TypeVar,
 )
 
-T  = TypeVar("T")
+T = TypeVar("T")
 
 class DisjointSet(Generic[T]):
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
