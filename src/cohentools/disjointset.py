@@ -1,74 +1,92 @@
 from typing import (
-    Any,
-    Generic,
-    Iterable,
-    Iterator,
-    Optional,
-    TypeVar,
+  Any,
+  Generic,
+  Hashable,
+  Iterable,
+  Iterator,
+  TypeVar,
 )
 
-T = TypeVar("T")
+T = TypeVar("T", bound=Hashable)
 
 class DisjointSet(Generic[T]):
-    def __init__(self, items: Optional[Iterable[T]] = None) -> None:
-        self._parent = dict[T, T]()
-        self._rank   = dict[T, int]()
-        for item in items or ():
-            self.add(item)
+  def __init__(self, nodes: Iterable[T] | None = None) -> None:
+    self.parent: dict[T, T]   = {}
+    self.size:   dict[T, int] = {}
+    if nodes is not None:
+      self.update(nodes)
 
-    def add(self, node: T) -> None:
-        self._parent.setdefault(node, node)
-        self._rank.setdefault(node, 0)
+  def add(self, node: T) -> None:
+    if node not in self:
+      self.parent[node] = node; self.size[node] = 1
 
-    def find(self, node: T) -> T:
-        while self._parent[node] != node:
-            self._parent[node] = self._parent[self._parent[node]]
-            node = self._parent[node]
-        return node
+  def update(self, nodes: Iterable[T]) -> None:
+    for node in nodes:
+      self.add(node)
 
-    def union(self, x: T, y: T, *items: T) -> None:
-        x = self.find(x)
-        for y in (y, *items):
-            y = self.find(y)
-            if self._rank[x] < self._rank[y]:
-                x, y = y, x
-            self._parent[y] = x
-            self._rank[x]  += self._rank[x] == self._rank[y]
+  def find(self, node: T) -> T:
+    while self.parent[node] != node:
+      self.parent[node] = node = self.parent[self.parent[node]]
+    return node
 
-    def linked(self, x: T, y: T) -> bool:
-        return self.find(x) == self.find(y)
+  def union(self, x: T, y: T, *items: T) -> None:
+    if (x := self.find(x)) != (y := self.find(y)):
+      if self.size[x] < self.size[y]:
+        x, y = y, x
+      self.parent[y] = x
+      self.size[x]  += self.size.pop(y)
+    for y in items:
+      if x != (y := self.find(y)):
+        if self.size[x] < self.size[y]:
+          x, y = y, x
+        self.parent[y] = x
+        self.size[x]  += self.size.pop(y)
 
-    def groups(self) -> list[tuple[T, ...]]:
-        table = dict[T, list[T]]()
-        for node in self:
-            group = table.setdefault(self.find(node), [])
-            group.append(node)
-        return [tuple(group) for group in table.values()]
+  def merge(self, items: Iterable[T]) -> None:
+    itr = iter(items)
+    try:
+      self.union(next(itr), next(itr), *itr)
+    finally: ...
 
-    def __len__(self) -> int:
-        return len(self._parent)
+  def linked(self, x: T, y: T) -> bool:
+    return self.find(x) == self.find(y)
 
-    def __iter__(self) -> Iterator[T]:
-        return iter(self._parent.keys())
+  def groups(self) -> int:
+    return len(self.size)
 
-    def __contains__(self, item: T) -> bool:
-        return item in self._parent
+  def groupsize(self, node: T) -> int:
+    return self.size[self.find(node)]
 
-    def __bool__(self) -> bool:
-        return bool(self._parent)
+  def itergroups(self) -> Iterable[tuple[T, ...]]:
+    table: dict[T, list[T]] = {}
+    for node in self:
+      group = table.setdefault(self.find(node), [])
+      group.append(node)
+    return (tuple(group) for group in table.values())
 
-    def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, DisjointSet):
-            return NotImplemented
-        return set(self.groups()) == set(other.groups())
+  def __len__(self) -> int:
+    return len(self.parent)
 
-    def __ne__(self, other: Any) -> bool:
-        if not isinstance(other, DisjointSet):
-            return NotImplemented
-        return not self == other
+  def __iter__(self) -> Iterator[T]:
+    return iter(self.parent.keys())
 
-    def __repr__(self) -> str:
-        groups = self.groups(); groups.sort(key=len, reverse=True)
-        groups = [sorted(group, key=lambda x: (-self._rank[x], x)) for group in self.groups()]
-        groups = ", ".join("{" + ", ".join(f"{item}" for item in group) + "}" for group in groups)
-        return f"{type(self).__name__}([{groups}])"
+  def __contains__(self, item: T) -> bool:
+    return item in self.parent
+
+  def __bool__(self) -> bool:
+    return bool(len(self))
+
+  def __eq__(self, other: Any) -> bool:
+    if not isinstance(other, DisjointSet):
+      return NotImplemented
+    return set(self.itergroups()) == set(other.itergroups())
+
+  def __ne__(self, other: Any) -> bool:
+    if not isinstance(other, DisjointSet):
+      return NotImplemented
+    return not self == other
+
+  def __repr__(self) -> str:
+    groups = ", ".join("{" + ", ".join(f"{item}" for item in group) + "}"
+               for group in self.itergroups())
+    return f"{type(self).__name__}([{groups}])"
