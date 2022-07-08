@@ -79,7 +79,9 @@ class DisjointSet(Generic[T]):
   def __eq__(self, other: Any) -> bool:
     if not isinstance(other, DisjointSet):
       return NotImplemented
-    return set(self.itergroups()) == set(other.itergroups())
+    return set(self) == set(other) \
+       and all(self.find(node) == other.find(node)
+               for node in self)
 
   def __ne__(self, other: Any) -> bool:
     if not isinstance(other, DisjointSet):
