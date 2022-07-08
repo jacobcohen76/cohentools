@@ -57,12 +57,12 @@ class DisjointSet(Generic[T]):
   def groupsize(self, node: T) -> int:
     return self.size[self.find(node)]
 
-  def itergroups(self) -> Iterable[tuple[T, ...]]:
-    table: dict[T, list[T]] = {}
+  def itergroups(self) -> Iterable[set[T]]:
+    table: dict[T, set[T]] = {}
     for node in self:
-      group = table.setdefault(self.find(node), [])
-      group.append(node)
-    return (tuple(group) for group in table.values())
+      group = table.setdefault(self.find(node), set())
+      group.add(node)
+    return table.values()
 
   def __len__(self) -> int:
     return len(self.parent)
@@ -79,9 +79,7 @@ class DisjointSet(Generic[T]):
   def __eq__(self, other: Any) -> bool:
     if not isinstance(other, DisjointSet):
       return NotImplemented
-    return set(self) == set(other) \
-       and all(self.find(node) == other.find(node)
-               for node in self)
+    return sorted(self.itergroups()) == sorted(other.itergroups())
 
   def __ne__(self, other: Any) -> bool:
     if not isinstance(other, DisjointSet):
@@ -89,6 +87,4 @@ class DisjointSet(Generic[T]):
     return not self == other
 
   def __repr__(self) -> str:
-    groups = ", ".join("{" + ", ".join(f"{item}" for item in group) + "}"
-               for group in self.itergroups())
-    return f"{type(self).__name__}([{groups}])"
+    return f"{type(self).__name__}({list(self.itergroups())})"
