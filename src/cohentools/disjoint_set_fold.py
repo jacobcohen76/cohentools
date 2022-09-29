@@ -15,8 +15,8 @@ VT = TypeVar('VT')
 class DisjointSetFold(Generic[KT, VT]):
   def __init__(self, op: Callable[[VT, VT], VT], items: Iterable[tuple[KT, VT]] | None = None) -> None:
     self._op                    = op
-    self._size:   dict[KT, int] = {}
     self._parent: dict[KT, KT]  = {}
+    self._size:   dict[KT, int] = {}
     self._table:  dict[KT, VT]  = {}
     if items is not None:
       self.update(items)
@@ -79,8 +79,8 @@ class DisjointSetFold(Generic[KT, VT]):
     if key in self:
       raise KeyError(f'{key} already exists')
     self._parent[key] = key
-    self._size[key] = 1
-    self._table[key] = val
+    self._size[key]   = 1
+    self._table[key]  = val
 
   def update(self, items: Iterable[tuple[KT, VT]]) -> None:
     for key, val in items:
