@@ -1,3 +1,4 @@
+import collections
 from typing import (
   Any,
   Generic,
@@ -11,39 +12,37 @@ T = TypeVar("T", bound=Hashable)
 
 class DisjointSet(Generic[T]):
   def __init__(self, nodes: Iterable[T] | None = None) -> None:
-    self.parent: dict[T, T]   = {}
-    self.size:   dict[T, int] = {}
+    self._parent: dict[T, T]   = {}
+    self._size:   dict[T, int] = {}
     if nodes is not None:
       self.update(nodes)
 
   def add(self, node: T) -> None:
     if node not in self:
-      self.parent[node] = node; self.size[node] = 1
+      self._parent[node] = node; self._size[node] = 1
 
   def update(self, nodes: Iterable[T]) -> None:
     for node in nodes:
       self.add(node)
 
   def find(self, node: T) -> T:
-    while self.parent[node] != node:
-      self.parent[node] = node = self.parent[self.parent[node]]
+    while node != self._parent[node]:
+      self._parent[node] = node = self._parent[self._parent[node]]
     return node
 
-  def union(self, x: T, y: T, *items: T) -> None:
+  def union(self, x: T, y: T, *nodes: T) -> None:
     if (x := self.find(x)) != (y := self.find(y)):
-      if self.size[x] < self.size[y]:
+      if self._size[x] < self._size[y]:
         x, y = y, x
-      self.parent[y] = x
-      self.size[x]  += self.size.pop(y)
-    for y in items:
+      self._parent[y] = x; self._size[x] += self._size.pop(y)
+    for y in nodes:
       if x != (y := self.find(y)):
-        if self.size[x] < self.size[y]:
+        if self._size[x] < self._size[y]:
           x, y = y, x
-        self.parent[y] = x
-        self.size[x]  += self.size.pop(y)
+        self._parent[y] = x; self._size[x] += self._size.pop(y)
 
-  def merge(self, items: Iterable[T]) -> None:
-    itr = iter(items)
+  def merge(self, nodes: Iterable[T]) -> None:
+    itr = iter(nodes)
     try:
       self.union(next(itr), next(itr), *itr)
     finally: ...
@@ -52,26 +51,25 @@ class DisjointSet(Generic[T]):
     return self.find(x) == self.find(y)
 
   def groups(self) -> int:
-    return len(self.size)
+    return len(self._size)
 
   def groupsize(self, node: T) -> int:
-    return self.size[self.find(node)]
+    return self._size[self.find(node)]
 
   def itergroups(self) -> Iterable[set[T]]:
-    table: dict[T, set[T]] = {}
+    table = collections.defaultdict(set)
     for node in self:
-      group = table.setdefault(self.find(node), set())
-      group.add(node)
+      table[self.find(node)].add(node)
     return table.values()
 
   def __len__(self) -> int:
-    return len(self.parent)
+    return len(self._parent)
 
   def __iter__(self) -> Iterator[T]:
-    return iter(self.parent.keys())
+    return iter(self._parent.keys())
 
   def __contains__(self, item: T) -> bool:
-    return item in self.parent
+    return item in self._parent
 
   def __bool__(self) -> bool:
     return bool(len(self))
@@ -79,7 +77,8 @@ class DisjointSet(Generic[T]):
   def __eq__(self, other: Any) -> bool:
     if not isinstance(other, DisjointSet):
       return NotImplemented
-    return sorted(self.itergroups()) == sorted(other.itergroups())
+    return sorted(sorted(group) for group in  self.itergroups()) \
+        == sorted(sorted(group) for group in other.itergroups())
 
   def __ne__(self, other: Any) -> bool:
     if not isinstance(other, DisjointSet):
@@ -87,4 +86,7 @@ class DisjointSet(Generic[T]):
     return not self == other
 
   def __repr__(self) -> str:
-    return f"{type(self).__name__}({list(self.itergroups())})"
+    groups = sorted(sorted(group) for group in self.itergroups())
+    groups = ', '.join(f'{{{", ".join(f"{item}" for item in group)}}}'
+                       for group in groups)
+    return f'{type(self).__name__}([{groups}])'
