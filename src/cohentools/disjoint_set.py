@@ -80,11 +80,6 @@ class DisjointSet(Generic[T]):
     return sorted(sorted(group) for group in  self.itergroups()) \
         == sorted(sorted(group) for group in other.itergroups())
 
-  def __ne__(self, other: Any) -> bool:
-    if not isinstance(other, DisjointSet):
-      return NotImplemented
-    return not self == other
-
   def __repr__(self) -> str:
     groups = sorted(sorted(group) for group in self.itergroups())
     groups = ', '.join(f'{{{", ".join(f"{item}" for item in group)}}}'
