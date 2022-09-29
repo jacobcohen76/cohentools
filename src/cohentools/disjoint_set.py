@@ -8,7 +8,7 @@ from typing import (
   TypeVar,
 )
 
-T = TypeVar("T", bound=Hashable)
+T = TypeVar('T', bound=Hashable)
 
 class DisjointSet(Generic[T]):
   def __init__(self, nodes: Iterable[T] | None = None) -> None:

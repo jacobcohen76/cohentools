@@ -7,7 +7,7 @@ from typing import (
   TypeVar,
 )
 
-T = TypeVar("T")
+T = TypeVar('T')
 
 @dataclasses.dataclass
 class TreeNode(Generic[T]):

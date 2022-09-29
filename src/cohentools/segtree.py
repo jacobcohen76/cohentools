@@ -9,7 +9,7 @@ from typing import (
     TypeVar,
 )
 
-T = TypeVar("T")
+T = TypeVar('T')
 
 def make_tree(array: list[T], op: Callable[[T, T], T]) -> list[T]:
     tree = [None] * (2 * len(array))
@@ -43,15 +43,11 @@ class SegTree(Generic[T]):
     def query(self, i: int, j: int, default: T) -> T:
         return query_tree(self._tree, self._op, i + len(self), j + len(self), default)
 
-    def __getitem__(self, key: SupportsIndex) -> T:
-        if not isinstance(key, SupportsIndex):
-            raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
-        return self._tree[key + len(self)]
+    def __getitem__(self, idx: int) -> T:
+        return self._tree[len(self) + idx]
 
-    def __setitem__(self, key: SupportsIndex, item: T) -> None:
-        if not isinstance(key, SupportsIndex):
-            raise TypeError(f"SegTree indices must be integers, not {type(key).__name__}")
-        update_tree(self._tree, self._op, key + len(self), item)
+    def __setitem__(self, idx: int, item: T) -> None:
+        update_tree(self._tree, self._op, len(self) + idx, item)
 
     def __len__(self) -> int:
         return self._size
@@ -62,8 +58,8 @@ class SegTree(Generic[T]):
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, SegTree):
             return NotImplemented
-        return self._op == other._op and \
-            all(a == b for a, b in zip(self, other))
+        return self._op == other._op \
+           and all(a == b for a, b in zip(self, other))
 
     def __ne__(self, other: Any) -> bool:
         if not isinstance(other, SegTree):
