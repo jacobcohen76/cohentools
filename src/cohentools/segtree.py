@@ -62,5 +62,5 @@ class SegTree(Generic[T]):
        and all(a == b for a, b in zip(self, other))
 
   def __repr__(self) -> str:
-    items = ", ".join(str(item) for item in self)
-    return f"{type(self).__name__}([{items}], {self._op})"
+    items = ', '.join(str(item) for item in self)
+    return f'{type(self).__name__}([{items}], {self._op})'
