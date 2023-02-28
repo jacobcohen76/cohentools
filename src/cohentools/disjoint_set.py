@@ -26,6 +26,8 @@ class DisjointSet(Generic[T]):
       self.add(node)
 
   def find(self, node: T) -> T:
+    if node not in self:
+      self.add(node)
     while node != self._parent[node]:
       self._parent[node] = node = self._parent[self._parent[node]]
     return node
@@ -44,8 +46,10 @@ class DisjointSet(Generic[T]):
   def merge(self, nodes: Iterable[T]) -> None:
     itr = iter(nodes)
     try:
-      self.union(next(itr), next(itr), *itr)
-    finally: ...
+      self.add(fst := next(itr))
+      self.add(snd := next(itr))
+      self.union(fst, snd, *itr)
+    except: ...
 
   def linked(self, x: T, y: T) -> bool:
     return self.find(x) == self.find(y)
@@ -80,7 +84,7 @@ class DisjointSet(Generic[T]):
     return sorted(sorted(group) for group in  self.itergroups()) \
         == sorted(sorted(group) for group in other.itergroups())
 
-  def __repr__(self) -> str:
+  def __str__(self) -> str:
     groups = sorted(sorted(group) for group in self.itergroups())
     groups = ', '.join(f'{{{", ".join(f"{item}" for item in group)}}}'
                        for group in groups)
